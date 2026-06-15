@@ -1,0 +1,167 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #009c3b 0%, #009c3b 40%, #ffdf00 100%);
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 25px;
+}
+
+.logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.header h1 {
+  color: #002776;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  color: #444;
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+
+.content {
+  flex: 1;
+}
+
+.busca-area {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.busca-area input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+}
+
+.busca-area button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #002776;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.busca-area button:hover {
+  background: #001a52;
+}
+
+.sugestoes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.chip {
+  background: #ffdf00;
+  color: #002776;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.chip:hover {
+  background: #ffe94d;
+}
+
+.status {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 20px;
+}
+
+.erro {
+  color: #ffe5e5;
+  background: rgba(180, 0, 0, 0.4);
+  padding: 12px 20px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  border-top: 5px solid #009c3b;
+  text-align: center;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.foto {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+
+.card h2 {
+  color: #002776;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ffdf00;
+  padding-bottom: 6px;
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.label {
+  font-weight: bold;
+  color: #009c3b;
+}
+
+.footer {
+  text-align: center;
+  color: #ffffff;
+  font-size: 0.8rem;
+  margin-top: 30px;
+  opacity: 0.85;
+}

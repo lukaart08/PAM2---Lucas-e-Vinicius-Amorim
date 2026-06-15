@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { TextInput } from 'react-native-web';
 
 export default function App() {
@@ -19,7 +19,7 @@ export default function App() {
     />
     <Image
           source={{
-            uri: 'https://media.tenor.com/RKDWKVSUihYAAAAj/suspicious-emoji.gif',
+            url: 'https://media.tenor.com/RKDWKVSUihYAAAAj/suspicious-emoji.gif',
           }}
           style={{width: 200, height: 200}}
         />
