@@ -1,4 +1,4 @@
-import StackNavigator from '.navigation/StackNavigator';
+import StackNavigator from './navigation/StackNavigator';
 
 export default function App() {
   return <StackNavigator />;

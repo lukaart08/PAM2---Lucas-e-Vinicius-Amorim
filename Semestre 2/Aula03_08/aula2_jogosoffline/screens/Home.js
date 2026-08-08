@@ -67,7 +67,7 @@ export default function App() {
           <View style={styles.botaoFlex}>
             <TouchableOpacity
               style={styles.botaoInterno}
-              onPress={() => navigation.navigate('PedraPapelTesoura'), {PedraPapelTesoura}}
+              onPress={() => navigation.navigate('PedraPapelTesoura')}
             >
               <Text style={styles.botaoTexto}>PEDRA{'\n'}PAPEL{'\n'}TESOURA</Text>
             </TouchableOpacity>
