@@ -72,6 +72,15 @@ export default function App() {
               <Text style={styles.botaoTexto}>PEDRA{'\n'}PAPEL{'\n'}TESOURA</Text>
             </TouchableOpacity>
           </View>
+
+          <View style={styles.botaoFlex}>
+            <TouchableOpacity
+              style={styles.botaoInterno}
+              onPress={() => navigation.navigate('Game2')}
+            >
+              <Text style={styles.botaoTexto}>JOGO{'\n'}DA{'\n'}VELHA</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </ScrollView>
