@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, ScrollView, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, ScrollView, Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-export default function App() {
+export default function Home() {
   const navigation = useNavigation();
   const [nome, setNome] = useState('');
   const [relogio, setRelogio] = useState('00:00:00');
@@ -81,6 +81,15 @@ export default function App() {
               <Text style={styles.botaoTexto}>JOGO{'\n'}DA{'\n'}VELHA</Text>
             </TouchableOpacity>
           </View>
+        </View>
+
+        <View style={styles.botaoListaWrap}>
+          <TouchableOpacity
+            style={styles.botaoLista}
+            onPress={() => navigation.navigate('List')}
+          >
+            <Text style={styles.botaoListaTexto}>VER LISTA COMPLETA {'>'}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
@@ -255,37 +264,26 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     textAlign: 'center',
   },
-  badges: {
-    flexDirection: 'row',
-    marginBottom: 18,
-  },
-  badge: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 4,
-    marginRight: 10,
-    borderWidth: 1,
-  },
-  badgeAzul: {
-    backgroundColor: '#03101f',
-    borderColor: '#00e5ff',
-  },
-  badgeRosa: {
-    backgroundColor: '#03101f',
-    borderColor: '#ff3d6e',
-  },
-  badgeTexto: {
-    fontSize: 12,
-    fontFamily: 'monospace',
-    fontWeight: '700',
-    color: '#5ad1ff',
-    letterSpacing: 1,
-  },
-  reiniciarWrap: {
+  botaoListaWrap: {
+    width: '100%',
     borderRadius: 6,
     overflow: 'hidden',
-    width: '100%',
-    marginBottom: 14,
+  },
+  botaoLista: {
+    backgroundColor: '#03101f',
+    borderWidth: 1,
+    borderColor: '#ff3d6e',
+    borderRadius: 6,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  botaoListaTexto: {
+    color: '#ff3d6e',
+    fontFamily: 'monospace',
+    fontWeight: '700',
+    fontSize: 12,
+    letterSpacing: 1,
   },
   rodape: {
     fontFamily: 'monospace',
