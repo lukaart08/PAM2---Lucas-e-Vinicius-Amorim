@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, ScrollView, Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import { StyleSheet, ScrollView, Image, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import NomeInput from '../inputs/NomeInput';
+import AvatarInput from '../inputs/AvatarInput';
 
 export default function Home() {
   const navigation = useNavigation();
   const [nome, setNome] = useState('');
+  const [avatar, setAvatar] = useState('');
   const [relogio, setRelogio] = useState('00:00:00');
 
   useEffect(() => {
@@ -41,25 +44,21 @@ export default function Home() {
         </View>
 
         <Text style={styles.nomeAtual}>
-          {nome ? `> ${nome.toUpperCase()}_` : '> JOGADOR_'}
+          {avatar ? `${avatar} ` : ''}{nome ? `> ${nome.toUpperCase()}_` : '> JOGADOR_'}
         </Text>
 
         <Text style={styles.rodape}>QUAL É SEU NOME?</Text>
 
-        <View style={styles.linhaInput}>
-          <TextInput
-            style={styles.input}
-            placeholder="Juca"
-            placeholderTextColor="#1c4e77"
-            value={nome}
-            onChangeText={setNome}
-          />
-          <View style={styles.botaoPequeno}>
-            <TouchableOpacity style={styles.botaoInterno} onPress={() => setNome('')}>
-              <Text style={styles.botaoTexto}>X</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <NomeInput
+          value={nome}
+          onChangeText={setNome}
+          onClear={() => setNome('')}
+        />
+
+        <AvatarInput
+          value={avatar}
+          onChange={setAvatar}
+        />
 
         <View style={styles.separador} />
 
@@ -67,7 +66,7 @@ export default function Home() {
           <View style={styles.botaoFlex}>
             <TouchableOpacity
               style={styles.botaoInterno}
-              onPress={() => navigation.navigate('PedraPapelTesoura')}
+              onPress={() => navigation.navigate('PedraPapelTesoura', { nome, avatar })}
             >
               <Text style={styles.botaoTexto}>PEDRA{'\n'}PAPEL{'\n'}TESOURA</Text>
             </TouchableOpacity>
@@ -86,7 +85,7 @@ export default function Home() {
         <View style={styles.botaoListaWrap}>
           <TouchableOpacity
             style={styles.botaoLista}
-            onPress={() => navigation.navigate('List')}
+            onPress={() => navigation.navigate('FlatList')}
           >
             <Text style={styles.botaoListaTexto}>VER LISTA COMPLETA {'>'}</Text>
           </TouchableOpacity>
@@ -200,30 +199,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginBottom: 4,
   },
-  linhaInput: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 10,
-    marginBottom: 8,
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#1c4e77',
-    backgroundColor: '#03101f',
-    color: '#5ad1ff',
-    borderRadius: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    fontSize: 14,
-    fontFamily: 'monospace',
-  },
-  botaoPequeno: {
-    borderRadius: 6,
-    overflow: 'hidden',
-    marginLeft: 8,
-  },
   separador: {
     height: 1,
     backgroundColor: '#1c4e77',
@@ -240,11 +215,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     overflow: 'hidden',
     marginRight: 10,
-  },
-  botaoFlexUltimo: {
-    flex: 1,
-    borderRadius: 6,
-    overflow: 'hidden',
   },
   botaoInterno: {
     backgroundColor: '#03101f',

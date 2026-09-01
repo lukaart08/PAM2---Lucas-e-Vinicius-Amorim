@@ -48,9 +48,9 @@ export default function PedraPapelTesoura({ route, navigation }) {
   }
 
   function textoResultado() {
-    if (resultado === 'empate') return 'EMPATE!';
-    if (resultado === 'jogador') return 'VOCÊ VENCEU!';
-    if (resultado === 'maquina') return 'VOCÊ PERDEU!';
+    if (resultado === 'empate') return 'EMPATOU LIXO KKK';
+    if (resultado === 'jogador') return 'FINALMENTE GANHOU ALGO';
+    if (resultado === 'maquina') return 'LIXOOOOOOOO';
     return null;
   }
 

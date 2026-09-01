@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import Home from '../screens/Home';
-import List from '../screens/FlatList';
+import FlatList from '../screens/FlatList';
 import game1 from '../screens/game1';
 import game2 from '../screens/game2';
 
