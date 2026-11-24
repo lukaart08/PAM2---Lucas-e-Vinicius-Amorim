@@ -1,5 +1,5 @@
-import { Text, View, TextInput, Button, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { useState } from 'react';
+import { Text, View, TextInput, Button, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { useState, useEffect, useMemo } from 'react';
 import { collection, addDoc, doc, getDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 
 import { auth, db } from '../firebase/firebase';
@@ -10,10 +10,16 @@ const TIPOS = [
   'Normal', 'Fogo', 'Água', 'Planta', 'Elétrico', 'Gelo', 'Lutador', 'Veneno',
   'Terra', 'Voador', 'Psíquico', 'Inseto', 'Pedra', 'Fantasma', 'Dragão', 'Sombrio', 'Aço', 'Fada',
 ];
-//eu vou enlouquecer
+
+const API = 'https://pokeapi.co/api/v2';
+const idDaUrl = (url) => Number(url.split('/').filter(Boolean).pop());
+const imagemDoId = (id) =>
+  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+const capitalizar = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
 async function buscarImagem(nome) {
   try {
-    const resposta = await fetch(`https://pokeapi.co/api/v2/pokemon/${nome.trim().toLowerCase()}`);
+    const resposta = await fetch(`${API}/pokemon/${nome.trim().toLowerCase()}`);
     if (!resposta.ok) return null;
     const dados = await resposta.json();
     return dados.sprites.front_default;
@@ -23,7 +29,7 @@ async function buscarImagem(nome) {
 }
 
 export default function FormPokemon({ navigation, route }) {
-  const pokemon = route.params?.pokemon; 
+  const pokemon = route.params?.pokemon;
   const uid = auth.currentUser?.uid;
   const somenteLeitura = !!pokemon && pokemon.donoId !== uid;
 
@@ -32,6 +38,50 @@ export default function FormPokemon({ navigation, route }) {
   const [nivel, setNivel] = useState(pokemon ? String(pokemon.nivel) : '');
   const [descricao, setDescricao] = useState(pokemon?.descricao ?? '');
   const [salvando, setSalvando] = useState(false);
+
+  // --- pesquisa de Pokémon ---
+  const [lista, setLista] = useState([]); // [{ id, nome }]
+  const [carregandoLista, setCarregandoLista] = useState(true);
+  const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
+  const [previa, setPrevia] = useState(pokemon?.imagem ?? '');
+
+  // Carrega todos os Pokémon (só nome + id, leve) uma vez
+  useEffect(() => {
+    if (somenteLeitura) return;
+    let ativo = true;
+    fetch(`${API}/pokemon?limit=1025&offset=0`)
+      .then((r) => r.json())
+      .then((dados) => {
+        if (!ativo) return;
+        setLista(dados.results.map((p) => ({ id: idDaUrl(p.url), nome: p.name })));
+      })
+      .catch((error) => console.log(error))
+      .finally(() => ativo && setCarregandoLista(false));
+    return () => {
+      ativo = false;
+    };
+  }, [somenteLeitura]);
+
+  // Filtra por nome ou número; quem começa com o texto aparece primeiro
+  const sugestoes = useMemo(() => {
+    const q = nome.trim().toLowerCase().replace(/^#/, '');
+    if (!mostrarSugestoes || !q) return [];
+    const achados = lista.filter((p) => p.nome.includes(q) || String(p.id) === q);
+    achados.sort((a, b) => Number(b.nome.startsWith(q)) - Number(a.nome.startsWith(q)));
+    return achados.slice(0, 8);
+  }, [lista, nome, mostrarSugestoes]);
+
+  function digitarNome(texto) {
+    setNome(texto);
+    setMostrarSugestoes(true);
+    setPrevia(''); // o texto mudou, a prévia antiga não vale mais
+  }
+
+  function escolherPokemon(p) {
+    setNome(capitalizar(p.nome));
+    setPrevia(imagemDoId(p.id));
+    setMostrarSugestoes(false);
+  }
 
   async function salvar() {
     const nivelNumero = Number(nivel);
@@ -47,7 +97,8 @@ export default function FormPokemon({ navigation, route }) {
 
     setSalvando(true);
     try {
-      const imagem = await buscarImagem(nome);
+      // Se escolheu da lista, já temos a imagem; senão tenta buscar pelo nome digitado
+      const imagem = previa || (await buscarImagem(nome));
       const dados = {
         nome: nome.trim(),
         tipo,
@@ -93,10 +144,11 @@ export default function FormPokemon({ navigation, route }) {
   const titulo = !pokemon ? 'Registrar Pokémon' : somenteLeitura ? pokemon.nome : 'Editar Pokémon';
 
   return (
-    <ScrollView contentContainerStyle={estilos.scroll}>
+    // keyboardShouldPersistTaps: sem isso o 1º toque numa sugestão só fecha o teclado
+    <ScrollView contentContainerStyle={estilos.scroll} keyboardShouldPersistTaps="handled">
       <Text style={estilos.titulo}>{titulo}</Text>
 
-      {pokemon?.imagem ? <Image source={{ uri: pokemon.imagem }} style={estilos.previa} /> : null}
+      {previa ? <Image source={{ uri: previa }} style={estilos.previa} /> : null}
 
       {somenteLeitura && (
         <Text style={[estilos.cardInfo, { textAlign: 'center' }]}>Treinador: {pokemon.donoNome}</Text>
@@ -104,12 +156,32 @@ export default function FormPokemon({ navigation, route }) {
 
       <Text style={estilos.texto}>Nome</Text>
       <TextInput
-        placeholder="Ex.: Pikachu"
+        placeholder="Pesquise pelo nome ou número (ex.: Pikachu, 25)"
         style={[estilos.input, somenteLeitura && estilos.inputDesativado]}
         value={nome}
-        onChangeText={setNome}
+        onChangeText={digitarNome}
         editable={!somenteLeitura}
+        autoCapitalize="none"
+        autoCorrect={false}
       />
+
+      {!somenteLeitura && carregandoLista && <ActivityIndicator style={{ marginVertical: 6 }} />}
+
+      {sugestoes.length > 0 && (
+        <View style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, backgroundColor: '#fff', marginBottom: 8 }}>
+          {sugestoes.map((p) => (
+            <TouchableOpacity
+              key={p.id}
+              onPress={() => escolherPokemon(p)}
+              style={{ flexDirection: 'row', alignItems: 'center', padding: 6, borderBottomWidth: 1, borderBottomColor: '#eee' }}
+            >
+              <Image source={{ uri: imagemDoId(p.id) }} style={{ width: 40, height: 40, marginRight: 10 }} />
+              <Text style={{ flex: 1, fontSize: 16 }}>{capitalizar(p.nome)}</Text>
+              <Text style={{ color: '#888' }}>#{p.id}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
       <Text style={estilos.texto}>Tipo</Text>
       <View style={estilos.linhaChips}>
